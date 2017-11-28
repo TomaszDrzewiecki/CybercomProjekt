@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "Dokumentacja Projektu";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+
+<h3>Rozdział 1. Utworzenie projektu "Biblioteka".</h3>
+<div class="warning">
+   Projekt utworzono na podstawie szablonu: "Aplikacja sieci Web platformy ASP.NET(.NET Framework wisual c#)" w programie Microsoft Visual Studio 2017.
+</div>
+
+<h3>Rozdział 2. Tworzymy Model Danych.</h3>
+<p>
+    Sprawdzamy connection string, czyli łańcuch połaczenia z bazą danych. W głównym katalogu aplikacji otwieramy plik Web.config.
+    Odszukujemy fragment:
+</p>
+<code>
+    <xmp><connectionStrings><add name="DBLibrary" connectionString="Data Source= itd." ... /></connectionStrings></xmp>
+</code>
+<p>Zwróć uwagę na to aby w zanczniku <add> element "name" wskazywał nazwę taką samą jak nazwa klasy, która dziedziczy po DBContext. W naszym przypadku, to DBLibrary, którą zaraz utworzymy.</p>
+
+<p>W katalogu Models tworzymy klasy, z których powstanie model danych. Tabele, to zbiory obiektów danej klasy.</p>
+
+<p>Kliknij prawym przyciskiem myszy na katalog "Models" Wybierz "Dodaj"-&gt;"Klasa.."</p>
+
+<p>W oknie wpisujemy nazwę nowej klasy "Book.cs" i zatwierdzamy.</p>
+
+<p>W utworzonym pliku wpisujemy:</p>
+
+<code id="pierwszy">
+    using System;<br />
+    using System.Collections.Generic;<br/>
+    using System.Linq;<br />
+    using System.Web;<br />
+
+    namespace NazwaProjektu.Models<br />
+    {<br/>
+    public class Book<br />
+    {<br/>
+    public int Id { get; set; }<br />
+    public int AuthorId { get; set; }<br />
+    public string Title { get; set; }<br />
+    public int ISBN { get; set; }<br />   
+    public int ReleaseDate { get; set; }<br />
+    }</br>
+    }<br />
+</code>
+<p>
+    W miejscu "NazwaProjektu" wpisujemy nazwę swojego projektu.
+
+    Analogicznie tworzymy jeszcze dwie kolejne klasy:
+    Najpierw klasę "Author.cs".
+</p>
+
+<code>
+    using System;<br />
+    using System.Collections.Generic;<br />
+    using System.Linq;<br />
+    using System.Web;<br />
+
+    namespace NazwaProjektu.Models<br />
+    {<br />
+    public class Author<br />
+    {<br />
+    public int Id { get; set; }<br />
+    public string Name { get; set; }<br />
+    public string Surname { get; set; }<br />
+    }<br />
+    }<br />
+</code>
+<p>oraz klasę "DBLibrary.cs"</p>
+
+<code>
+    using System.Web;<br />
+    using System.Data.Entity;<br />
+    namespace NazwaProjektu.Models<br />
+    {<br />
+    public class DBLibrary : DbContext<br />
+    {<br />
+    public DbSet tabBooks { get; set; }<br />
+    public DbSet tabAuthors { get; set; }<br />
+    public void TestDate()<br />
+    {<br />
+    Book s1 = new Models.Book() { Title = "Pan Tadeusz", ReleaseDate = 1834,  ISBN= 1, AuthorId = 1};<br />
+    this.tabBooks.Add(s1);<br />
+    this.tabBooks.Add(new Models.Book() { Title = "Grażyna", ReleaseDate = 1823, ISBN = 2, AuthorId = 1 });<br />
+    this.tabBooks.Add(new Models.Book() { Title = "Dziady Część III", ReleaseDate = 1832, ISBN = 3, AuthorId = 1});<br />
+    this.tabBooks.Add(new Models.Book() { Title = "Ballady i Romanse", ReleaseDate = 1822, ISBN = 4, AuthorId = 1});<br />
+    this.tabBooks.Add(new Models.Book() { Title = "Ogniem i Mieczem", ReleaseDate = 1884, ISBN = 5, AuthorId = 2});<br />
+    this.tabBooks.Add(new Models.Book() { Title = "Kordian", ReleaseDate = 1834, ISBN = 6, AuthorId = 3 });<br />
+    this.tabBooks.Add(new Models.Book() { Title = "Balladyna", ReleaseDate = 1839, ISBN = 7, AuthorId = 3 });<br />
+    this.tabAuthors.Add(new Models.Author(){Name = "Adam", Surname = "Mickiewicz" });<br />
+    this.tabAuthors.Add(new Models.Author() { Name = "Juliusz", Surname = "Słowacki" });<br />
+    this.SaveChanges();<br />
+    }<br />
+    }<br />
+    }<br />
+</code>
+
+<p>Pamiętaj o podaniu odpowiedniej przestrzeni nazw w miejscu "NazwaProjektu" - takiej samej jak nazwa Twojego projektu.</p>
+
+<p>Zwróć uwagę na metodę TestDate() klasy DBLibrary. Uruchamiamy ją tylko raz w celu utworzenia i wypełnienia bazy danych.</p>
+<p>Jak to zrobić? </p>
+<p>W kontrolerze HomeController dodajemy kilka wpisów:</p>
+<code>
+    using System;<br />
+    using System.Collections.Generic;<br />
+    using System.Linq;<br />
+    using System.Web;<br />
+    using System.Web.Mvc;<br />
+
+    namespace NazwaProjektu.Controllers<br />
+    {<br />
+    public class HomeController : Controller<br />
+    {<br />
+    Models.DBLibrary db = new Models.DBLibrary();<br />
+    public ActionResult Index()<br />
+    {<br />
+</code>
+<p>tutaj uruchamiamy metodę tworząca bazę danych. Po pojedynczym uruchomieniu, możemy ją zakomentować -->//db.TestDate();</p>
+<code>
+    db.TestDate();<br />
+    return View();<br />
+    }<br />
+
+    
+    }<br />
+    }<br />
+</code>
+<p>
+    Teraz uruchamiamy projekt klikając w zieloną strzałkę na górnym menu. W wyniku otrzymamy wypełnioną bazę danych.
+    Zatrzymujemy projekt. Bazę danych możemy zobaczyć klikając "widok"->"Eksplorator Serwera"->"Połączenia Danych" i nazwa naszej bazy. Kliknij Prawym przyciskiem na jedną z tabel i wybierz "Pokaż dane tabeli".
+
+    Teraz możesz zakomentować wspomniany fragment w HomeController (//db.TestDate()).
+</p>
+<h3>Rozdział 3. Kontrolery i Akcje</h3>
+<h3>Rozdział 4. Routing</h3>
+<h3>Rozdział 5. SEO</h3>
+etc.
