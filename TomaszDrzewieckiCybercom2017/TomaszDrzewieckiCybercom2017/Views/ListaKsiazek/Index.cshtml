@@ -1,0 +1,51 @@
+﻿@model IEnumerable<TomaszDrzewieckiCybercom2017.Models.Book>
+
+@{
+    ViewBag.Title = "Lista Książek";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Dodaj Pozycję", "Create")
+</p>
+<table class="table table-condensed">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AuthorId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ISBN)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReleaseDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AuthorId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ISBN)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReleaseDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edycja", "Edit", new { id=item.Id }, new { @class = "btn btn-sm btn-info" }) 
+            @Html.ActionLink("Szczegóły", "Details", new { id=item.Id }, new { @class = "btn btn-sm btn-success" }) 
+            @Html.ActionLink("Usuń", "Delete", new { id=item.Id }, new { @class = "btn btn-sm btn-danger" })
+        </td>
+    </tr>
+}
+
+</table>
